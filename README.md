@@ -1,8 +1,9 @@
 # 🗂️ Oriva
 
-A local-first web app for managing projects by linking **People** and **Task** cards inside a "Space" and visualizing relationships as an Obsidian-style node graph.
 
-<img width="460" alt="image" src="https://github.com/user-attachments/assets/03920d4c-c05e-45d8-b6e2-8c587e8340df" />
+<img width="640" alt="image" src="https://github.com/user-attachments/assets/03920d4c-c05e-45d8-b6e2-8c587e8340df" />
+
+A local-first web app for managing projects by linking **People** and **Task** cards inside a "Space" and visualizing relationships as an Obsidian-style node graph.
 
 ![React](https://img.shields.io/badge/React-19-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue)
