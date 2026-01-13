@@ -19,12 +19,13 @@ import '@xyflow/react/dist/style.css';
 import Dagre from '@dagrejs/dagre';
 
 import { useStore } from '../store/useStore';
-import { PeopleNode, TaskNode } from './nodes';
+import { PeopleNode, TaskNode, StrategyNode } from './nodes';
 import type { Space } from '../models';
 
 const nodeTypes: NodeTypes = {
   person: PeopleNode,
   task: TaskNode,
+  strategy: StrategyNode,
 };
 
 interface SpaceCanvasProps {

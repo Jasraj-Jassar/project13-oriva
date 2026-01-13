@@ -21,8 +21,10 @@ export interface Position {
   y: number;
 }
 
-export type NodeType = 'person' | 'task';
+export type NodeType = 'person' | 'task' | 'strategy';
 export type TaskStatus = 'todo' | 'doing' | 'done';
+export type StrategyPriority = 'critical' | 'high' | 'medium' | 'low';
+export type StrategyStatus = 'planning' | 'active' | 'paused' | 'completed';
 
 export interface PersonData {
   name: string;
@@ -36,12 +38,21 @@ export interface TaskData {
   notes?: string;
 }
 
+export interface StrategyData {
+  title: string;
+  description?: string;
+  priority: StrategyPriority;
+  status: StrategyStatus;
+  objectives?: string;
+  notes?: string;
+}
+
 export interface SpaceNode {
   id: string;
   spaceId: string;
   type: NodeType;
   position: Position;
-  data: PersonData | TaskData;
+  data: PersonData | TaskData | StrategyData;
 }
 
 export interface SpaceEdge {
@@ -54,8 +65,16 @@ export interface SpaceEdge {
 }
 
 // Type guards
-export function isPersonData(data: PersonData | TaskData): data is PersonData {
+export function isPersonData(data: PersonData | TaskData | StrategyData): data is PersonData {
   return 'name' in data && !('title' in data);
+}
+
+export function isTaskData(data: PersonData | TaskData | StrategyData): data is TaskData {
+  return 'title' in data && 'status' in data && !('priority' in data);
+}
+
+export function isStrategyData(data: PersonData | TaskData | StrategyData): data is StrategyData {
+  return 'title' in data && 'priority' in data && 'status' in data;
 }
 
 export function isTaskData(data: PersonData | TaskData): data is TaskData {

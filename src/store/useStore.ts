@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
-import type { Project, Space, SpaceNode, SpaceEdge, PersonData, TaskData, NodeType } from '../models';
+import type { Project, Space, SpaceNode, SpaceEdge, PersonData, TaskData, StrategyData, NodeType } from '../models';
 
 const STORE_VERSION = 1;
 
@@ -28,9 +28,9 @@ interface AppState {
   getSpaceByProjectId: (projectId: string) => Space | undefined;
   
   // Node actions
-  addNode: (spaceId: string, type: NodeType, position: { x: number; y: number }, data: PersonData | TaskData) => string;
+  addNode: (spaceId: string, type: NodeType, position: { x: number; y: number }, data: PersonData | TaskData | StrategyData) => string;
   updateNode: (id: string, updates: Partial<Omit<SpaceNode, 'id' | 'spaceId' | 'type'>>) => void;
-  updateNodeData: (id: string, data: Partial<PersonData> | Partial<TaskData>) => void;
+  updateNodeData: (id: string, data: Partial<PersonData> | Partial<TaskData> | Partial<StrategyData>) => void;
   deleteNode: (id: string) => void;
   moveNode: (id: string, position: { x: number; y: number }) => void;
   selectNode: (id: string | null) => void;
@@ -168,7 +168,7 @@ export const useStore = create<AppState>()(
       },
       
       // Node actions
-      addNode: (spaceId: string, type: NodeType, position: { x: number; y: number }, data: PersonData | TaskData) => {
+      addNode: (spaceId: string, type: NodeType, position: { x: number; y: number }, data: PersonData | TaskData | StrategyData) => {
         const id = uuidv4();
         const node: SpaceNode = {
           id,
@@ -208,7 +208,7 @@ export const useStore = create<AppState>()(
         });
       },
       
-      updateNodeData: (id: string, dataUpdates: Partial<PersonData> | Partial<TaskData>) => {
+      updateNodeData: (id: string, dataUpdates: Partial<PersonData> | Partial<TaskData> | Partial<StrategyData>) => {
         set((state) => {
           const node = state.nodes[id];
           if (!node) return state;

@@ -5,7 +5,7 @@ import { ReactFlowProvider } from '@xyflow/react';
 import { useStore } from '../store/useStore';
 import SpaceCanvas from '../components/SpaceCanvas';
 import InspectorPanel from '../components/InspectorPanel';
-import type { PersonData, TaskData } from '../models';
+import type { PersonData, TaskData, StrategyData } from '../models';
 
 const Project = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -80,6 +80,25 @@ const Project = () => {
     addNode(space.id, 'task', position, data);
   };
   
+  const handleAddStrategy = () => {
+    const data: StrategyData = {
+      title: 'New Strategy',
+      description: '',
+      priority: 'medium',
+      status: 'planning',
+      objectives: '',
+      notes: '',
+    };
+    
+    // Add at a random position near center
+    const position = {
+      x: 200 + Math.random() * 300,
+      y: 100 + Math.random() * 200,
+    };
+    
+    addNode(space.id, 'strategy', position, data);
+  };
+  
   return (
     <div className="h-screen bg-gray-950 text-white flex flex-col">
       {/* Top bar */}
@@ -98,6 +117,14 @@ const Project = () => {
         </div>
         
         <div className="flex items-center gap-3">
+          <button
+            onClick={handleAddStrategy}
+            className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 font-bold shadow-lg shadow-amber-900/30"
+          >
+            <span>⚔️</span>
+            <span>Add Strategy</span>
+          </button>
+          <div className="h-6 w-px bg-gray-700" />
           <button
             onClick={handleAddPerson}
             className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 font-medium"
