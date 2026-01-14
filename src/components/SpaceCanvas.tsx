@@ -78,6 +78,8 @@ const SpaceCanvas = ({ space }: SpaceCanvasProps) => {
           id: e.id,
           source: e.sourceId,
           target: e.targetId,
+          sourceHandle: e.sourceHandle,
+          targetHandle: e.targetHandle,
           label: e.label,
           animated: isHighlighted,
           style: {
@@ -122,7 +124,14 @@ const SpaceCanvas = ({ space }: SpaceCanvasProps) => {
   const onConnect = useCallback(
     (connection: Connection) => {
       if (connection.source && connection.target) {
-        addStoreEdge(space.id, connection.source, connection.target);
+        addStoreEdge(
+          space.id,
+          connection.source,
+          connection.target,
+          undefined,
+          connection.sourceHandle ?? undefined,
+          connection.targetHandle ?? undefined
+        );
         setEdges((eds) => addEdge(connection, eds));
       }
     },

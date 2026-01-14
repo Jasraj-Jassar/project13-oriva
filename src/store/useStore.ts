@@ -36,7 +36,7 @@ interface AppState {
   selectNode: (id: string | null) => void;
   
   // Edge actions
-  addEdge: (spaceId: string, sourceId: string, targetId: string, label?: string) => string;
+  addEdge: (spaceId: string, sourceId: string, targetId: string, label?: string, sourceHandle?: string, targetHandle?: string) => string;
   deleteEdge: (id: string) => void;
   
   // Highlight actions
@@ -290,7 +290,7 @@ export const useStore = create<AppState>()(
       },
       
       // Edge actions
-      addEdge: (spaceId: string, sourceId: string, targetId: string, label?: string) => {
+      addEdge: (spaceId: string, sourceId: string, targetId: string, label?: string, sourceHandle?: string, targetHandle?: string) => {
         // Check if edge already exists
         const existingEdge = Object.values(get().edges).find(
           (e) =>
@@ -306,6 +306,8 @@ export const useStore = create<AppState>()(
           spaceId,
           sourceId,
           targetId,
+          sourceHandle,
+          targetHandle,
           label,
           createdAt: new Date().toISOString(),
         };

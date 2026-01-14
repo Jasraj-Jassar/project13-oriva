@@ -43,8 +43,39 @@ const StrategyNode = memo(({ data, selected }: StrategyNodeProps) => {
       `}
     >
       <Handle
-        type="target"
+        type="source"
+        id="top-source"
         position={Position.Top}
+        className="!w-3 !h-3 !bg-[#636CCB] !border-2 !border-[#50589C]"
+      />
+      <Handle
+        type="target"
+        id="top-target"
+        position={Position.Top}
+        className="!w-3 !h-3 !bg-[#636CCB] !border-2 !border-[#50589C]"
+      />
+      <Handle
+        type="source"
+        id="left-source"
+        position={Position.Left}
+        className="!w-3 !h-3 !bg-[#636CCB] !border-2 !border-[#50589C]"
+      />
+      <Handle
+        type="target"
+        id="left-target"
+        position={Position.Left}
+        className="!w-3 !h-3 !bg-[#636CCB] !border-2 !border-[#50589C]"
+      />
+      <Handle
+        type="source"
+        id="right-source"
+        position={Position.Right}
+        className="!w-3 !h-3 !bg-[#636CCB] !border-2 !border-[#50589C]"
+      />
+      <Handle
+        type="target"
+        id="right-target"
+        position={Position.Right}
         className="!w-3 !h-3 !bg-[#636CCB] !border-2 !border-[#50589C]"
       />
       
@@ -87,6 +118,13 @@ const StrategyNode = memo(({ data, selected }: StrategyNodeProps) => {
       
       <Handle
         type="source"
+        id="bottom-source"
+        position={Position.Bottom}
+        className="!w-3 !h-3 !bg-[#636CCB] !border-2 !border-[#50589C]"
+      />
+      <Handle
+        type="target"
+        id="bottom-target"
         position={Position.Bottom}
         className="!w-3 !h-3 !bg-[#636CCB] !border-2 !border-[#50589C]"
       />

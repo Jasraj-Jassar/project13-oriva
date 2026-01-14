@@ -60,6 +60,8 @@ export interface SpaceEdge {
   spaceId: string;
   sourceId: string;
   targetId: string;
+  sourceHandle?: string;
+  targetHandle?: string;
   label?: string;
   createdAt: string;
 }
