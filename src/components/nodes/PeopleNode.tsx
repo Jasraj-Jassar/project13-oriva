@@ -2,6 +2,8 @@ import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import type { PersonData } from '../../models';
 
+const nodeGradient = 'bg-gradient-to-br from-[#3C467B] via-[#50589C] via-[#636CCB] to-[#6E8CFB]';
+
 interface PeopleNodeData extends PersonData {
   isHighlighted?: boolean;
   isDimmed?: boolean;
@@ -19,10 +21,9 @@ const PeopleNode = memo(({ data, selected }: PeopleNodeProps) => {
     <div
       className={`
         px-4 py-3 rounded-xl border-2 min-w-[180px] transition-all duration-200
-        ${selected ? 'border-blue-400 ring-2 ring-blue-400/50' : 'border-purple-500/50'}
+        ${selected ? 'border-[#6E8CFB]' : 'border-[#50589C]'}
         ${nodeData.isDimmed ? 'opacity-30' : 'opacity-100'}
-        ${nodeData.isHighlighted ? 'shadow-lg shadow-purple-500/30' : ''}
-        bg-gradient-to-br from-purple-900/90 to-purple-800/90
+        ${nodeGradient}
       `}
     >
       <Handle

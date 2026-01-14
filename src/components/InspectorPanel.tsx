@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useStore } from '../store/useStore';
 import type { SpaceNode, PersonData, TaskData, StrategyData, TaskStatus, StrategyPriority, StrategyStatus } from '../models';
 
+const focusBorderClass = 'focus:border-[#6E8CFB]';
+const formFieldClass = `w-full bg-gray-800 border border-[#1F2A57] rounded-lg px-3 py-2 text-white focus:outline-none ${focusBorderClass}`;
+
 const InspectorPanel = () => {
   const { selectedNodeId, nodes, updateNodeData, deleteNode, selectNode } = useStore();
   const [localData, setLocalData] = useState<PersonData | TaskData | StrategyData | null>(null);
@@ -36,32 +39,25 @@ const InspectorPanel = () => {
   const handleSave = () => {
     if (selectedNodeId) {
       updateNodeData(selectedNodeId, localData);
+      selectNode(null);
     }
   };
   
   const handleDelete = () => {
-    if (selectedNodeId && confirm('Are you sure you want to delete this card?')) {
+    if (selectedNodeId) {
       deleteNode(selectedNodeId);
       selectNode(null);
     }
   };
   
   const getTitle = () => {
-    if (isPerson) return '👤 Person';
-    if (isTask) return '�� Task';
-    return '⚔️ Strategy';
+    if (isPerson) return 'Person';
+    if (isTask) return 'Task';
+    return 'Strategy';
   };
-  
-  const getAccentColor = () => {
-    if (isPerson) return 'purple';
-    if (isTask) return 'teal';
-    return 'amber';
-  };
-  
-  const accent = getAccentColor();
-  
+
   return (
-    <div className="w-80 bg-gray-900/95 border-l border-gray-700 p-4 flex flex-col overflow-y-auto">
+    <div className="w-80 bg-[#111F35] border-l border-gray-700 p-4 flex flex-col overflow-y-auto">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-white text-lg font-semibold">
           {getTitle()}
@@ -83,7 +79,7 @@ const InspectorPanel = () => {
                 type="text"
                 value={personData.name}
                 onChange={(e) => setLocalData({ ...personData, name: e.target.value })}
-                className={`w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-${accent}-500`}
+                className={formFieldClass}
                 placeholder="Enter name..."
               />
             </div>
@@ -93,7 +89,7 @@ const InspectorPanel = () => {
                 type="text"
                 value={personData.role || ''}
                 onChange={(e) => setLocalData({ ...personData, role: e.target.value })}
-                className={`w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-${accent}-500`}
+                className={formFieldClass}
                 placeholder="e.g., Developer, Manager..."
               />
             </div>
@@ -102,7 +98,7 @@ const InspectorPanel = () => {
               <textarea
                 value={personData.notes || ''}
                 onChange={(e) => setLocalData({ ...personData, notes: e.target.value })}
-                className={`w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-${accent}-500 resize-none`}
+                className={`${formFieldClass} resize-none`}
                 rows={4}
                 placeholder="Additional notes..."
               />
@@ -118,7 +114,7 @@ const InspectorPanel = () => {
                 type="text"
                 value={taskData.title}
                 onChange={(e) => setLocalData({ ...taskData, title: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-teal-500"
+                className={formFieldClass}
                 placeholder="Enter task title..."
               />
             </div>
@@ -127,7 +123,7 @@ const InspectorPanel = () => {
               <select
                 value={taskData.status}
                 onChange={(e) => setLocalData({ ...taskData, status: e.target.value as TaskStatus })}
-                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-teal-500"
+                className={formFieldClass}
               >
                 <option value="todo">To Do</option>
                 <option value="doing">Doing</option>
@@ -139,7 +135,7 @@ const InspectorPanel = () => {
               <textarea
                 value={taskData.notes || ''}
                 onChange={(e) => setLocalData({ ...taskData, notes: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-teal-500 resize-none"
+                className={`${formFieldClass} resize-none`}
                 rows={4}
                 placeholder="Additional notes..."
               />
@@ -150,69 +146,69 @@ const InspectorPanel = () => {
         {isStrategy && (
           <>
             <div>
-              <label className="block text-amber-400 text-sm mb-1 font-semibold">Strategy Title *</label>
+              <label className="block text-[#A5B4FC] text-sm mb-1 font-semibold">Strategy Title *</label>
               <input
                 type="text"
                 value={strategyData.title}
                 onChange={(e) => setLocalData({ ...strategyData, title: e.target.value })}
-                className="w-full bg-gray-800 border border-amber-600/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                className={formFieldClass}
                 placeholder="e.g., Market Expansion, Cost Reduction..."
               />
             </div>
             <div>
-              <label className="block text-amber-400 text-sm mb-1 font-semibold">Description</label>
+              <label className="block text-[#A5B4FC] text-sm mb-1 font-semibold">Description</label>
               <textarea
                 value={strategyData.description || ''}
                 onChange={(e) => setLocalData({ ...strategyData, description: e.target.value })}
-                className="w-full bg-gray-800 border border-amber-600/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500 resize-none"
+                className={`${formFieldClass} resize-none`}
                 rows={3}
                 placeholder="Describe the strategy..."
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-amber-400 text-sm mb-1 font-semibold">Priority</label>
+                <label className="block text-[#A5B4FC] text-sm mb-1 font-semibold">Priority</label>
                 <select
                   value={strategyData.priority}
                   onChange={(e) => setLocalData({ ...strategyData, priority: e.target.value as StrategyPriority })}
-                  className="w-full bg-gray-800 border border-amber-600/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  className={formFieldClass}
                 >
-                  <option value="critical">🔥 Critical</option>
+                  <option value="critical">Critical</option>
                   <option value="high">High</option>
                   <option value="medium">Medium</option>
                   <option value="low">Low</option>
                 </select>
               </div>
               <div>
-                <label className="block text-amber-400 text-sm mb-1 font-semibold">Status</label>
+                <label className="block text-[#A5B4FC] text-sm mb-1 font-semibold">Status</label>
                 <select
                   value={strategyData.status}
                   onChange={(e) => setLocalData({ ...strategyData, status: e.target.value as StrategyStatus })}
-                  className="w-full bg-gray-800 border border-amber-600/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  className={formFieldClass}
                 >
-                  <option value="planning">📋 Planning</option>
-                  <option value="active">⚡ Active</option>
-                  <option value="paused">⏸️ Paused</option>
-                  <option value="completed">✅ Completed</option>
+                  <option value="planning">Planning</option>
+                  <option value="active">Active</option>
+                  <option value="paused">Paused</option>
+                  <option value="completed">Completed</option>
                 </select>
               </div>
             </div>
             <div>
-              <label className="block text-amber-400 text-sm mb-1 font-semibold">🎯 Objectives</label>
+              <label className="block text-[#A5B4FC] text-sm mb-1 font-semibold">Objectives</label>
               <textarea
                 value={strategyData.objectives || ''}
                 onChange={(e) => setLocalData({ ...strategyData, objectives: e.target.value })}
-                className="w-full bg-gray-800 border border-amber-600/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500 resize-none"
+                className={`${formFieldClass} resize-none`}
                 rows={3}
                 placeholder="What are the key objectives?"
               />
             </div>
             <div>
-              <label className="block text-amber-400 text-sm mb-1 font-semibold">Notes</label>
+              <label className="block text-[#A5B4FC] text-sm mb-1 font-semibold">Notes</label>
               <textarea
                 value={strategyData.notes || ''}
                 onChange={(e) => setLocalData({ ...strategyData, notes: e.target.value })}
-                className="w-full bg-gray-800 border border-amber-600/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500 resize-none"
+                className={`${formFieldClass} resize-none`}
                 rows={3}
                 placeholder="Additional strategic notes..."
               />

@@ -188,19 +188,13 @@ const SpaceCanvas = ({ space }: SpaceCanvasProps) => {
         fitView
         snapToGrid
         snapGrid={[20, 20]}
-        className="bg-gray-950"
+        className="bg-[#111F35]"
         defaultEdgeOptions={{
           type: 'smoothstep',
           animated: true,
           style: { stroke: '#60a5fa', strokeWidth: 2 },
         }}
       >
-        <Background
-          variant={BackgroundVariant.Dots}
-          gap={20}
-          size={1}
-          color="#374151"
-        />
         <Controls className="!bg-gray-800 !border-gray-600 !rounded-lg" />
         <Panel position="top-right">
           <button

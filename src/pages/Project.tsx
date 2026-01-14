@@ -119,24 +119,21 @@ const Project = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={handleAddStrategy}
-            className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 font-bold shadow-lg shadow-amber-900/30"
+            className="bg-[#6E8CFB] hover:bg-[#5A7AF9] text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 font-bold shadow-lg shadow-[#3C467B]/40"
           >
-            <span>⚔️</span>
             <span>Add Strategy</span>
           </button>
           <div className="h-6 w-px bg-gray-700" />
           <button
             onClick={handleAddPerson}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 font-medium"
+            className="bg-[#636CCB] hover:bg-[#50589C] text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 font-medium"
           >
-            <span>👤</span>
             <span>Add Person</span>
           </button>
           <button
             onClick={handleAddTask}
-            className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 font-medium"
+            className="bg-[#50589C] hover:bg-[#454C85] text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 font-medium"
           >
-            <span>📋</span>
             <span>Add Task</span>
           </button>
         </div>
@@ -152,10 +149,6 @@ const Project = () => {
         {selectedNodeId && <InspectorPanel />}
       </div>
       
-      {/* Help tooltip */}
-      <div className="absolute bottom-4 left-4 bg-gray-800/90 text-gray-300 text-sm px-4 py-2 rounded-lg border border-gray-700">
-        💡 Drag from handles to connect cards • Click a card to edit • Scroll to zoom
-      </div>
     </div>
   );
 };
