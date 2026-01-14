@@ -30,37 +30,37 @@ const PeopleNode = memo(({ data, selected }: PeopleNodeProps) => {
         type="source"
         id="top-source"
         position={Position.Top}
-        className="!w-3 !h-3 !bg-purple-400 !border-2 !border-purple-600"
+        className="!w-3 !h-3 !bg-white/80 !border-2 !border-white/40"
       />
       <Handle
         type="target"
         id="top-target"
         position={Position.Top}
-        className="!w-3 !h-3 !bg-purple-400 !border-2 !border-purple-600"
+        className="!w-3 !h-3 !bg-white/80 !border-2 !border-white/40"
       />
       <Handle
         type="source"
         id="left-source"
         position={Position.Left}
-        className="!w-3 !h-3 !bg-purple-400 !border-2 !border-purple-600"
+        className="!w-3 !h-3 !bg-white/80 !border-2 !border-white/40"
       />
       <Handle
         type="target"
         id="left-target"
         position={Position.Left}
-        className="!w-3 !h-3 !bg-purple-400 !border-2 !border-purple-600"
+        className="!w-3 !h-3 !bg-white/80 !border-2 !border-white/40"
       />
       <Handle
         type="source"
         id="right-source"
         position={Position.Right}
-        className="!w-3 !h-3 !bg-purple-400 !border-2 !border-purple-600"
+        className="!w-3 !h-3 !bg-white/80 !border-2 !border-white/40"
       />
       <Handle
         type="target"
         id="right-target"
         position={Position.Right}
-        className="!w-3 !h-3 !bg-purple-400 !border-2 !border-purple-600"
+        className="!w-3 !h-3 !bg-white/80 !border-2 !border-white/40"
       />
       
       <div className="flex items-center gap-2 mb-2">
@@ -89,13 +89,13 @@ const PeopleNode = memo(({ data, selected }: PeopleNodeProps) => {
         type="source"
         id="bottom-source"
         position={Position.Bottom}
-        className="!w-3 !h-3 !bg-purple-400 !border-2 !border-purple-600"
+        className="!w-3 !h-3 !bg-white/80 !border-2 !border-white/40"
       />
       <Handle
         type="target"
         id="bottom-target"
         position={Position.Bottom}
-        className="!w-3 !h-3 !bg-purple-400 !border-2 !border-purple-600"
+        className="!w-3 !h-3 !bg-white/80 !border-2 !border-white/40"
       />
     </div>
   );
