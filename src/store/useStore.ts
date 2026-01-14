@@ -15,7 +15,15 @@ interface AppState {
   // UI State
   selectedProjectId: string | null;
   selectedNodeId: string | null;
+  selectedEdgeId: string | null;
   highlightedNodeIds: Set<string>;
+  
+  // History for undo
+  history: Array<{
+    nodes: Record<string, SpaceNode>;
+    edges: Record<string, SpaceEdge>;
+  }>;
+  historyIndex: number;
   
   // Project actions
   createProject: (name: string) => string;
@@ -38,6 +46,15 @@ interface AppState {
   // Edge actions
   addEdge: (spaceId: string, sourceId: string, targetId: string, label?: string, sourceHandle?: string, targetHandle?: string) => string;
   deleteEdge: (id: string) => void;
+  selectEdge: (id: string | null) => void;
+  
+  // History actions
+  pushHistory: () => void;
+  undo: () => void;
+  
+  // Keyboard actions
+  deleteSelected: () => void;
+  navigateNodes: (direction: 'up' | 'down' | 'left' | 'right', spaceId: string) => void;
   
   // Highlight actions
   setHighlightedNodes: (nodeIds: string[]) => void;
@@ -59,7 +76,10 @@ export const useStore = create<AppState>()(
       edges: {},
       selectedProjectId: null,
       selectedNodeId: null,
+      selectedEdgeId: null,
       highlightedNodeIds: new Set(),
+      history: [],
+      historyIndex: -1,
       
       // Project actions
       createProject: (name: string) => {
@@ -216,7 +236,7 @@ export const useStore = create<AppState>()(
           return {
             nodes: {
               ...state.nodes,
-              [id]: { ...node, data: { ...node.data, ...dataUpdates } },
+              [id]: { ...node, data: { ...node.data, ...dataUpdates } as PersonData | TaskData | StrategyData },
             },
           };
         });
@@ -350,8 +370,125 @@ export const useStore = create<AppState>()(
           return {
             edges: newEdges,
             spaces: newSpaces,
+            selectedEdgeId: state.selectedEdgeId === id ? null : state.selectedEdgeId,
           };
         });
+      },
+      
+      selectEdge: (id: string | null) => {
+        // Only clear selectedNodeId when actually selecting an edge
+        if (id !== null) {
+          set({ selectedEdgeId: id, selectedNodeId: null });
+        } else {
+          set({ selectedEdgeId: null });
+        }
+        get().clearHighlight();
+      },
+      
+      // History actions
+      pushHistory: () => {
+        const state = get();
+        const snapshot = {
+          nodes: { ...state.nodes },
+          edges: { ...state.edges },
+        };
+        
+        // Keep only last 50 history items
+        const newHistory = [...state.history.slice(0, state.historyIndex + 1), snapshot].slice(-50);
+        
+        set({
+          history: newHistory,
+          historyIndex: newHistory.length - 1,
+        });
+      },
+      
+      undo: () => {
+        const state = get();
+        if (state.historyIndex <= 0) return;
+        
+        const previousIndex = state.historyIndex - 1;
+        const previousState = state.history[previousIndex];
+        
+        if (previousState) {
+          set({
+            nodes: previousState.nodes,
+            edges: previousState.edges,
+            historyIndex: previousIndex,
+          });
+        }
+      },
+      
+      // Keyboard actions
+      deleteSelected: () => {
+        const state = get();
+        
+        // Push current state to history before deletion
+        get().pushHistory();
+        
+        if (state.selectedNodeId) {
+          get().deleteNode(state.selectedNodeId);
+        } else if (state.selectedEdgeId) {
+          get().deleteEdge(state.selectedEdgeId);
+        }
+      },
+      
+      navigateNodes: (direction: 'up' | 'down' | 'left' | 'right', spaceId: string) => {
+        const state = get();
+        const spaceNodes = Object.values(state.nodes).filter((n) => n.spaceId === spaceId);
+        
+        if (spaceNodes.length === 0) return;
+        
+        // If no node selected, select the first one
+        if (!state.selectedNodeId) {
+          const firstNode = spaceNodes[0];
+          if (firstNode) get().selectNode(firstNode.id);
+          return;
+        }
+        
+        const currentNode = state.nodes[state.selectedNodeId];
+        if (!currentNode) return;
+        
+        // Find the closest node in the given direction
+        let bestNode: SpaceNode | null = null;
+        let bestDistance = Infinity;
+        
+        for (const node of spaceNodes) {
+          if (node.id === currentNode.id) continue;
+          
+          const dx = node.position.x - currentNode.position.x;
+          const dy = node.position.y - currentNode.position.y;
+          
+          let isInDirection = false;
+          let distance = 0;
+          
+          switch (direction) {
+            case 'up':
+              isInDirection = dy < -20;
+              distance = Math.abs(dy) + Math.abs(dx) * 0.5;
+              break;
+            case 'down':
+              isInDirection = dy > 20;
+              distance = Math.abs(dy) + Math.abs(dx) * 0.5;
+              break;
+            case 'left':
+              isInDirection = dx < -20;
+              distance = Math.abs(dx) + Math.abs(dy) * 0.5;
+              break;
+            case 'right':
+              isInDirection = dx > 20;
+              distance = Math.abs(dx) + Math.abs(dy) * 0.5;
+              break;
+          }
+          
+          if (isInDirection && distance < bestDistance) {
+            bestDistance = distance;
+            bestNode = node;
+          }
+        }
+        
+        if (bestNode) {
+          get().selectNode((bestNode as SpaceNode).id);
+        }
       },
       
       // Highlight actions

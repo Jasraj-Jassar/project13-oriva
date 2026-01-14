@@ -78,7 +78,3 @@ export function isTaskData(data: PersonData | TaskData | StrategyData): data is 
 export function isStrategyData(data: PersonData | TaskData | StrategyData): data is StrategyData {
   return 'title' in data && 'priority' in data && 'status' in data;
 }
-
-export function isTaskData(data: PersonData | TaskData): data is TaskData {
-  return 'title' in data && 'status' in data;
-}

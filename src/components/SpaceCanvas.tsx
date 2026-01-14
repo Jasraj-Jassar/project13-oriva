@@ -2,8 +2,6 @@ import { useCallback, useMemo } from 'react';
 import {
   ReactFlow,
   Controls,
-  Background,
-  BackgroundVariant,
   useNodesState,
   useEdgesState,
   addEdge,
@@ -19,6 +17,7 @@ import '@xyflow/react/dist/style.css';
 import Dagre from '@dagrejs/dagre';
 
 import { useStore } from '../store/useStore';
+import { useKeyboardShortcuts } from '../hooks';
 import { PeopleNode, TaskNode, StrategyNode } from './nodes';
 import type { Space } from '../models';
 
@@ -37,11 +36,17 @@ const SpaceCanvas = ({ space }: SpaceCanvasProps) => {
     nodes: storeNodes,
     edges: storeEdges,
     selectedNodeId,
+    selectedEdgeId,
     highlightedNodeIds,
     addEdge: addStoreEdge,
     moveNode,
     selectNode,
+    selectEdge,
+    pushHistory,
   } = useStore();
+  
+  // Enable keyboard shortcuts
+  useKeyboardShortcuts({ spaceId: space.id });
   
   // Convert store nodes to React Flow nodes
   const initialNodes: Node[] = useMemo(() => {
@@ -73,6 +78,7 @@ const SpaceCanvas = ({ space }: SpaceCanvasProps) => {
         const isHighlighted =
           highlightedNodeIds.size === 0 ||
           (highlightedNodeIds.has(e.sourceId) && highlightedNodeIds.has(e.targetId));
+        const isSelected = e.id === selectedEdgeId;
         
         return {
           id: e.id,
@@ -81,15 +87,16 @@ const SpaceCanvas = ({ space }: SpaceCanvasProps) => {
           sourceHandle: e.sourceHandle,
           targetHandle: e.targetHandle,
           label: e.label,
-          animated: isHighlighted,
+          selected: isSelected,
+          animated: isHighlighted || isSelected,
           style: {
-            stroke: isHighlighted ? '#60a5fa' : '#374151',
-            strokeWidth: isHighlighted ? 2 : 1,
-            opacity: isHighlighted ? 1 : 0.3,
+            stroke: isSelected ? '#f59e0b' : isHighlighted ? '#60a5fa' : '#374151',
+            strokeWidth: isSelected ? 3 : isHighlighted ? 2 : 1,
+            opacity: isHighlighted || isSelected ? 1 : 0.3,
           },
         };
       });
-  }, [storeEdges, space.id, highlightedNodeIds]);
+  }, [storeEdges, space.id, highlightedNodeIds, selectedEdgeId]);
   
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -124,6 +131,7 @@ const SpaceCanvas = ({ space }: SpaceCanvasProps) => {
   const onConnect = useCallback(
     (connection: Connection) => {
       if (connection.source && connection.target) {
+        pushHistory();
         addStoreEdge(
           space.id,
           connection.source,
@@ -135,19 +143,29 @@ const SpaceCanvas = ({ space }: SpaceCanvasProps) => {
         setEdges((eds) => addEdge(connection, eds));
       }
     },
-    [addStoreEdge, space.id, setEdges]
+    [addStoreEdge, space.id, setEdges, pushHistory]
   );
   
   const onNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
       selectNode(node.id);
+      selectEdge(null);
     },
-    [selectNode]
+    [selectNode, selectEdge]
+  );
+  
+  const onEdgeClick = useCallback(
+    (_: React.MouseEvent, edge: Edge) => {
+      selectEdge(edge.id);
+      selectNode(null);
+    },
+    [selectEdge, selectNode]
   );
   
   const onPaneClick = useCallback(() => {
     selectNode(null);
-  }, [selectNode]);
+    selectEdge(null);
+  }, [selectNode, selectEdge]);
   
   // Auto-layout using Dagre
   const handleAutoLayout = useCallback(() => {
@@ -192,6 +210,7 @@ const SpaceCanvas = ({ space }: SpaceCanvasProps) => {
         onEdgesChange={handleEdgesChange}
         onConnect={onConnect}
         onNodeClick={onNodeClick}
+        onEdgeClick={onEdgeClick}
         onPaneClick={onPaneClick}
         nodeTypes={nodeTypes}
         fitView
