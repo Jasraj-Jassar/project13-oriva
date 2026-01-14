@@ -6,7 +6,7 @@ const focusBorderClass = 'focus:border-[#6E8CFB]';
 const formFieldClass = `w-full bg-gray-800 border border-[#1F2A57] rounded-lg px-3 py-2 text-white focus:outline-none ${focusBorderClass}`;
 
 const InspectorPanel = () => {
-  const { selectedNodeId, nodes, updateNodeData, deleteNode, selectNode } = useStore();
+  const { selectedNodeId, nodes, edges, updateNodeData, deleteNode, deleteEdge, selectNode } = useStore();
   const [localData, setLocalData] = useState<PersonData | TaskData | StrategyData | null>(null);
   
   const node: SpaceNode | undefined = selectedNodeId ? nodes[selectedNodeId] : undefined;
@@ -35,6 +35,18 @@ const InspectorPanel = () => {
   const personData = localData as PersonData;
   const taskData = localData as TaskData;
   const strategyData = localData as StrategyData;
+  const connectedEdges = Object.values(edges).filter(
+    (edge) => edge.sourceId === node?.id || edge.targetId === node?.id
+  );
+
+  const getNodeLabel = (nodeId: string) => {
+    const connectedNode = nodes[nodeId];
+    if (!connectedNode) return 'Unknown node';
+    if (connectedNode.type === 'person') {
+      return (connectedNode.data as PersonData).name || 'Person';
+    }
+    return (connectedNode.data as TaskData | StrategyData).title || connectedNode.type;
+  };
   
   const handleSave = () => {
     if (selectedNodeId) {
@@ -143,6 +155,30 @@ const InspectorPanel = () => {
           </>
         )}
         
+        {connectedEdges.length > 0 && (
+          <div className="space-y-2">
+            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Connections</div>
+            <div className="space-y-2">
+              {connectedEdges.map((edge) => (
+                <div
+                  key={edge.id}
+                  className="flex items-center justify-between bg-[#1B233C] border border-[#2A3559] px-3 py-2 rounded-lg"
+                >
+                  <span className="text-sm text-white/80 truncate">
+                    {getNodeLabel(edge.sourceId)} → {getNodeLabel(edge.targetId)}
+                  </span>
+                  <button
+                    onClick={() => deleteEdge(edge.id)}
+                    className="text-xs font-semibold text-red-400 hover:text-white transition-colors"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {isStrategy && (
           <>
             <div>
